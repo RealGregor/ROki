@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CroppingImageLibrary</RootNamespace>
     <AssemblyName>CroppingImageLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,9 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CroppingAdorner.cs" />
-    <Compile Include="Managers\DisplayTextManager.cs" />
     <Compile Include="Managers\OverlayManager.cs" />
-    <Compile Include="Managers\RectangleManager.cs" />
+    <Compile Include="Managers\PolygonManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Thumbs\ThumbCrop.cs" />
     <Compile Include="Thumbs\ThumbFactory.cs" />

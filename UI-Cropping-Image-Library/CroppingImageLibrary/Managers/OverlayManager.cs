@@ -11,19 +11,19 @@ namespace CroppingImageLibrary.Managers
     internal class OverlayManager
     {
         private readonly Canvas _canvas;
-        private readonly RectangleManager _rectangleManager;
+        private readonly PolygonManager _polygonManager;
 
         private readonly Path _pathOverlay;
         private GeometryGroup _geometryGroup;
 
-        public OverlayManager(Canvas canvas, RectangleManager rectangleManager)
+        public OverlayManager(Canvas canvas, PolygonManager rectangleManager)
         {
             _canvas = canvas;
-            _rectangleManager = rectangleManager;
+            _polygonManager = rectangleManager;
 
             _pathOverlay = new Path
             {
-                Fill = Brushes.Black,
+                Fill = Brushes.Orange,
                 Opacity = 0.5
             };
 
@@ -38,10 +38,21 @@ namespace CroppingImageLibrary.Managers
             _geometryGroup = new GeometryGroup();
             RectangleGeometry geometry1 =
                 new RectangleGeometry(new Rect(new Size(_canvas.ActualWidth, _canvas.ActualHeight)));
-            RectangleGeometry geometry2 = new RectangleGeometry(new Rect(_rectangleManager.TopLeft.X,
-                _rectangleManager.TopLeft.Y, _rectangleManager.RectangleWidth, _rectangleManager.RectangleHeight));
+            PointCollection points = new PointCollection();
+            foreach (var point in _polygonManager.Points)
+            {
+                points.Add(new Point(point.X, point.Y));
+            }
+            StreamGeometry geometry = new StreamGeometry();
+            if (points.Count > 0)
+                using (StreamGeometryContext ctx = geometry.Open())
+                {
+                    ctx.BeginFigure(points[0], true, true);
+                    ctx.PolyLineTo(points, true, true);
+                }
+
             _geometryGroup.Children.Add(geometry1);
-            _geometryGroup.Children.Add(geometry2);
+            _geometryGroup.Children.Add(geometry);
             _pathOverlay.Data = _geometryGroup;
         }
     }

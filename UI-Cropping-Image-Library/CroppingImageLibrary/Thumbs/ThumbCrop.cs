@@ -25,8 +25,8 @@ namespace CroppingImageLibrary.Thumbs
         /// <param name="drawingContext"></param>
         protected override void OnRender(DrawingContext drawingContext)
         {
-            drawingContext.DrawRectangle(Brushes.White, new Pen(Brushes.Black, 2), new Rect(new Size(ThumbSize, ThumbSize)));
-            drawingContext.DrawRectangle(Brushes.Black, new Pen(Brushes.Black, 0), new Rect(2, 2, 6, 6));
+            drawingContext.DrawRectangle(Brushes.Orange, new Pen(Brushes.Black, 2), new Rect(new Size(ThumbSize, ThumbSize)));
+            drawingContext.DrawRectangle(Brushes.HotPink, new Pen(Brushes.Black, 0), new Rect(2, 2, 6, 6));
         }
 
         /// <summary>

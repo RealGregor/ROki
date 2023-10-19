@@ -17,10 +17,9 @@ namespace CroppingImageLibrary
     {
         public event EventHandler<DoubleClickEventArgs> OnRectangleDoubleClickEvent;
 
-        private readonly RectangleManager _rectangleManager;
+        private readonly PolygonManager _rectangleManager;
         private readonly OverlayManager _overlayManager;
         private readonly ThumbManager _thumbManager;
-        private readonly DisplayTextManager _displayTextManager;
 
         private bool _isMouseLeftButtonDown;
 
@@ -33,10 +32,9 @@ namespace CroppingImageLibrary
             _visualCollection = new VisualCollection(this);
             _originalCanvas = (Canvas)adornedElement;
             _canvasOverlay = new Canvas();
-            _rectangleManager = new RectangleManager(_canvasOverlay);
+            _rectangleManager = new PolygonManager(_canvasOverlay);
             _overlayManager = new OverlayManager(_canvasOverlay, _rectangleManager);
             _thumbManager = new ThumbManager(_canvasOverlay, _rectangleManager);
-            _displayTextManager = new DisplayTextManager(_canvasOverlay, _rectangleManager);
             _visualCollection.Add(_canvasOverlay);
 
             MouseLeftButtonDown += MouseLeftButtonDownEventHandler;
@@ -47,12 +45,11 @@ namespace CroppingImageLibrary
             Loaded += (sender, args) => { _overlayManager.UpdateOverlay(); };
 
             //if rectangle size chanhed, re-draw overlay
-            _rectangleManager.RectangleSizeChanged += (sender, args) =>
+            _rectangleManager.PolygonSizeChanged += (sender, args) =>
             {
                 _overlayManager.UpdateOverlay();
-                _displayTextManager.UpdateSizeText();
             };
-            _rectangleManager.OnRectangleDoubleClickEvent += (sender, args) =>
+            _rectangleManager.OnPolygonDoubleClickEvent += (sender, args) =>
             {
                 if (OnRectangleDoubleClickEvent != null)
                     OnRectangleDoubleClickEvent(sender, new DoubleClickEventArgs()
@@ -97,10 +94,12 @@ namespace CroppingImageLibrary
                 parent.Arrange(new Rect(_originalCanvas.RenderSize));
             }
 
-            var crop = new CroppedBitmap(elementBitmap,
-                new Int32Rect((int)_rectangleManager.TopLeft.X, (int)_rectangleManager.TopLeft.Y,
-                    (int)_rectangleManager.RectangleWidth, (int)_rectangleManager.RectangleHeight));
-            return BitmapFrame.Create(crop);
+            //var crop = new CroppedBitmap(elementBitmap,
+            //    new Int32Rect((int)_polygonManager.TopLeft.X, (int)_polygonManager.TopLeft.Y,
+            //        (int)_polygonManager.RectangleWidth, (int)_polygonManager.RectangleHeight));
+            //TODO:
+
+            return BitmapFrame.Create(new Uri(""));
         }
         
         /// <summary>
@@ -112,11 +111,12 @@ namespace CroppingImageLibrary
         {
             _rectangleManager.MouseLeftButtonDownEventHandler(e);
             _overlayManager.UpdateOverlay();
-            if (_rectangleManager.RectangleWidth == 0 && _rectangleManager.RectangleHeight == 0)
-            {
-               // _thumbManager.ShowThumbs(false);
-                _displayTextManager.ShowText(false);
-            }
+            //HACK:
+            //if (_polygonManager.RectangleWidth == 0 && _polygonManager.RectangleHeight == 0)
+            //{
+            //   // _thumbManager.ShowThumbs(false);
+            //    _displayTextManager.ShowText(false);
+            //}
             _isMouseLeftButtonDown = true;
         }
         /// <summary>
@@ -136,8 +136,6 @@ namespace CroppingImageLibrary
                 _rectangleManager.MouseMoveEventHandler(e);
                 _overlayManager.UpdateOverlay();
                 _thumbManager.ShowThumbs(true);
-                _displayTextManager.ShowText(true);
-                _displayTextManager.UpdateSizeText();
                _thumbManager.UpdateThumbsPosition();
             }
         }
